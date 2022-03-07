@@ -3,6 +3,14 @@ import cors from "cors";
 const app = express();
 const port = 3001;
 import mongoDBClient from "./mongoClient";
+import { graphqlHTTP } from "express-graphql";
+import { schema } from "./schemas";
+
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("Hello Express!");
+});
 
 // API REST
 import { Product } from "./models/product";
@@ -25,11 +33,14 @@ app.get("/products/:category", async (req, res) => {
   }
 });
 
-app.use(cors());
-
-app.get("/", (req, res) => {
-  res.send("Hello Express!");
-});
+// API graphQL
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    graphiql: true,
+  }),
+);
 
 app.listen(port, () => {
   console.log(`Server up and running on port ${port}!`);
